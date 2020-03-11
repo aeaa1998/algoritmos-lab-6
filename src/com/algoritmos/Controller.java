@@ -1,6 +1,13 @@
 package com.algoritmos;
 
+import java.io.Console;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class Controller {
@@ -14,12 +21,15 @@ public class Controller {
         add("Mostrar el nombre y tipo de todas las cartas existentes, ordenadas por tipo");
         add("Salir");
     }};
-    private ArrayList<String> types = new ArrayList<>(){{add("Mounstruo"); add("Trampa");add("Hechizo");}};
+    private ArrayList<String> types = new ArrayList<>(){{add("Monstruo"); add("Trampa");add("Hechizo");}};
     private User user;
 
     public Controller() {
+
         user = new User();
         pool = MapFactory.getFactory().getMap();
+        fillPool("cards_desc.txt");
+
     }
     public void init(){
         int decision = -1;
@@ -64,8 +74,17 @@ public class Controller {
                     break;
 
                 case 5:
-//                        ACA VA EL CODIGO DE TODAS LAS CARTAS FILTRADAS POR TIPO Y MOSTRANDO TODOS SUS CASOS ES COMO EL
-//                        CODIGO DEL CASE 3
+                    types.forEach((type) -> {
+                        View.getView().print("Tipo: " + type + "Cartas:\n");
+                        mergeCards().forEach((name, card) -> {
+                            if (type.equalsIgnoreCase(card.getType())) card.describe(1);
+                        });
+                        View.getView().print("\n\n");
+                    });
+
+                    break;
+                default:
+                    decision = 6;
                     break;
 
 
@@ -85,5 +104,31 @@ public class Controller {
         holder.putAll(user.getCollectionOfCard());
         holder.putAll(pool);
         return holder;
+    }
+    private void fillPool(String text){
+        try {
+
+            var mainPath = Controller.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            if (getOsName().startsWith("Windows")){
+                if(String.valueOf(mainPath.charAt(0)).equals("/")) { mainPath = mainPath.substring(1, mainPath.length());}
+            }
+            List<String> strings = Files.readAllLines(Path.of(mainPath + text));
+            for (String line:
+                    strings) {
+
+                var holder = new ArrayList<String>(){{ addAll(List.of(line.split("\\|")));}};
+                var name = holder.get(0);
+                var type = holder.get(1);
+                pool.put(name, new Card(type, name));
+            }
+
+        } catch(URISyntaxException | IOException e){
+            System.out.print(e);
+            System.out.println("Revise bien que su archivo txt  exista");
+        }
+    }
+    private  String getOsName()
+    {
+        return System.getProperty("os.name");
     }
 }

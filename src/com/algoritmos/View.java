@@ -256,8 +256,9 @@ public class View {
 
         ArrayList<String> ids = new ArrayList<String>();
         final int[] i = {0};
+        View.getView().print("Ingrese uno de los siguientes valores");
         map.forEach((id, object) -> {
-            System.out.print(id + ". " + object.toString() + "\n");
+            System.out.print(id + " \n");
             ids.add(id);
             i[0]++;
         });

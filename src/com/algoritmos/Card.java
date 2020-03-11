@@ -1,8 +1,5 @@
 package com.algoritmos;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Card implements Comparable{
     private String type = "";
     private String name = "";
@@ -41,13 +38,19 @@ public class Card implements Comparable{
         View.getView().print(
                 "Nombre: " + name +
                 "\nTipo: " + type +
-                "\nCantidad: " + count
+                "\nCantidad: " + count + "\n"
         );
     }
     public void describe(){
         View.getView().print(
                 "Nombre: " + name +
-                        "\nTipo: " + type
+                        "\nTipo: " + type + "\n"
         );
+    }
+
+    public String toString(){
+
+        return "Nombre: " + name +
+                "\nTipo: " + type + "\n";
     }
 }
